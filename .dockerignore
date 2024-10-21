@@ -7,6 +7,7 @@ frontend/yarn-error.log*
 frontend/pnpm-debug.log*
 frontend/lerna-debug.log*
 frontend/.vite
+frontend/.env
 node_modules
 frontend/dist
 dist-ssr
