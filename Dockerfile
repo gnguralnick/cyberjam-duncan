@@ -20,6 +20,8 @@ WORKDIR /backend
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
+RUN apt-get update && apt-get install ffmpeg libsm6 libxext6 -y
+
 COPY backend/requirements.txt .
 RUN pip install --no-cache-dir --upgrade -r requirements.txt
 
@@ -31,5 +33,7 @@ COPY --from=build /frontend/dist static
 
 EXPOSE 8000
 
-CMD ["fastapi", "run", "app/main.py", "--port", "8000"]
+# CMD ["fastapi", "run", "app/main.py", "--port", "8000"]
+
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
 
