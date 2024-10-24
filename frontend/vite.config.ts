@@ -6,8 +6,8 @@ export default defineConfig({
   plugins: [react()],
   server: {
     https: {
-      key: './ssl/key.pem',
-      cert: './ssl/cert.pem'
+      key: 'certs/key.pem',
+      cert: 'certs/cert.pem'
     },
     host: '0.0.0.0',
     port: 3000

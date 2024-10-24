@@ -1,8 +1,6 @@
-from fastapi import FastAPI, UploadFile, File, HTTPException
+from fastapi import FastAPI, Request, UploadFile, File, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
-from fastapi.staticfiles import StaticFiles
-from pydantic import BaseModel
 from typing import Dict
 import qrcode
 import cv2
@@ -12,17 +10,13 @@ import os
 from pathlib import Path
 import ssl
 
-app = FastAPI(title='root app')
-
-# ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
-# ssl_context.load_cert_chain('ssl/cert.pem', keyfile='ssl/key.pem')
-
-api_app = FastAPI(title='api app')
+app = FastAPI()
 
 # Enable CORS
-api_app.add_middleware(
+origins = os.getenv("CORS_ORIGINS", "https://localhost:8443").split(",")
+app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -73,9 +67,11 @@ def generate_ar_marker_pattern(image_path: Path, output_path: Path):
                 f.write(" ".join(values) + "\n")
             f.write("\n")
 
-@api_app.post("/upload/model")
-async def upload_model(file: UploadFile = File(...)):
+@app.post("/upload/model")
+async def upload_model(request: Request):
     """Upload a 3D model file and generate QR code and AR marker pattern."""
+    file = await request.body()
+    
     if not file.filename.endswith(('.glb', '.gltf')):
         raise HTTPException(400, "Only .glb or .gltf files are supported")
     
@@ -130,14 +126,14 @@ async def upload_model(file: UploadFile = File(...)):
         marker_path.unlink(missing_ok=True)
         raise HTTPException(500, f"Failed to process files: {str(e)}")
 
-@api_app.get("/files/{file_id}")
+@app.get("/files/{file_id}")
 async def get_file_info(file_id: str):
     """Get information about stored files for a given file ID."""
     if file_id not in FILE_STORAGE:
         raise HTTPException(404, "File ID not found")
     return FILE_STORAGE[file_id]
 
-@api_app.get("/model/{file_id}")
+@app.get("/model/{file_id}")
 async def get_model(file_id: str):
     """Serve the 3D model file."""
     if file_id not in FILE_STORAGE:
@@ -153,7 +149,7 @@ async def get_model(file_id: str):
         media_type="application/octet-stream"
     )
 
-@api_app.get("/qr/{file_id}")
+@app.get("/qr/{file_id}")
 async def get_qr(file_id: str):
     """Serve the QR code image."""
     if file_id not in FILE_STORAGE:
@@ -169,7 +165,7 @@ async def get_qr(file_id: str):
         media_type="image/png"
     )
 
-@api_app.get("/marker/{file_id}")
+@app.get("/marker/{file_id}")
 async def get_marker(file_id: str):
     """Serve the AR marker pattern file."""
     if file_id not in FILE_STORAGE:
@@ -184,13 +180,3 @@ async def get_marker(file_id: str):
         filename=marker_path.name,
         media_type="text/plain"
     )
-    
-app.mount("/api", api_app)
-
-# Serve Frontend
-
-app.mount("/", StaticFiles(directory="static", html=True), name="frontend")
-    
-if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run('main:app', host='0.0.0.0', port=8000, reload=True)

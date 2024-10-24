@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { ARDisplayProps, ARSceneElements } from '../types';
+import { BASE_URL } from '../api';
 
 export const ARDisplay: React.FC<ARDisplayProps> = ({ qrCode, modelUrl }) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -12,7 +13,7 @@ export const ARDisplay: React.FC<ARDisplayProps> = ({ qrCode, modelUrl }) => {
 
     const marker = document.createElement('a-marker');
     marker.setAttribute('type', 'pattern');
-    marker.setAttribute('url', `http://localhost:8000/marker/${qrCode}`);
+    marker.setAttribute('url', `${BASE_URL}/marker/${qrCode}`);
     marker.setAttribute('emitevents', 'true');
 
     const model = document.createElement('a-entity');
