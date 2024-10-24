@@ -10,3 +10,5 @@
 *.sw?
 
 backend/venv
+
+certs/
