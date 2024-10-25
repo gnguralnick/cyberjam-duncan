@@ -1,4 +1,4 @@
-export const BASE_URL = 'https://cyberjam-duncan-backend.railway.internal';
+export const BASE_URL = import.meta.env.VITE_API_URL || 'https://localhost:8443';
 
 interface ApiOptions extends RequestInit {
   params?: Record<string, string>;
