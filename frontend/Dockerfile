@@ -13,6 +13,7 @@ CMD ["npm", "run", "dev"]
 
 FROM base as production
 # Install dependencies without devDependencies
+RUN npm install -g typescript
 RUN npm install --prod --force
 COPY . .
 RUN npm run build
