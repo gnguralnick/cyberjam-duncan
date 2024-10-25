@@ -15,5 +15,5 @@ FROM base as production
 # Install dependencies without devDependencies
 RUN npm install --prod --force
 COPY . .
-RUN npm build
+RUN npm run build
 CMD ["npm", "run", "preview"]
