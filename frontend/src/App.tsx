@@ -1,38 +1,32 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { QRCodeScanner } from './components/QRCodeScanner.tsx';
 import { ARDisplay } from './components/ARDisplay.tsx';
-import { api } from './api.ts';
+import { api, BASE_URL } from './api.ts';
 
 const App: React.FC = () => {
   const [scannedCode, setScannedCode] = useState<string | null>(null);
   const [modelUrl, setModelUrl] = useState<string | null>(null);
+  const [markerUrl, setMarkerUrl] = useState<string | null>(null);
 
   const handleQRCodeScanned = async (fileId: string): Promise<void> => {
     setScannedCode(fileId);
     try {
-      const modelBlob = await api.get<Blob>(`/model/${fileId}`, {responseType: 'blob'});
-      const modelUrl = URL.createObjectURL(modelBlob);
-      setModelUrl(modelUrl);
+
+      const fileInfo = await api.get<{ model_path: string, marker_path: string}>(`/files/${fileId}`);
+      setModelUrl(BASE_URL + fileInfo.model_path);
+      setMarkerUrl(BASE_URL + fileInfo.marker_path);
     } catch (error) {
       console.error('Error fetching model:', error instanceof Error ? error.message : 'Unknown error');
       alert('Failed to load 3D model');
     }
   };
 
-  useEffect(() => {
-    return () => {
-      if (modelUrl) {
-        URL.revokeObjectURL(modelUrl);
-      }
-    };
-  }, [modelUrl]);
-
   return (
     <div className="h-screen w-screen">
-      {!modelUrl ? (
+      {!(modelUrl && markerUrl) ? (
         <QRCodeScanner onCodeScanned={handleQRCodeScanned} />
       ) : (
-        scannedCode && <ARDisplay qrCode={scannedCode} modelUrl={modelUrl} />
+        scannedCode && <ARDisplay qrCode={scannedCode} modelUrl={modelUrl} markerUrl={markerUrl} />
       )}
     </div>
   );

@@ -10,13 +10,13 @@ FROM base as development
 # Enable pnpm store
 RUN pnpm config set store-dir /root/.local/share/pnpm/store
 # Install all dependencies (including devDependencies)
-RUN pnpm install --frozen-lockfile
+RUN pnpm install
 COPY . .
 CMD ["pnpm", "dev"]
 
 FROM base as production
 # Install dependencies without devDependencies
-RUN pnpm install --frozen-lockfile --prod
+RUN pnpm install --prod
 COPY . .
 RUN pnpm build
 CMD ["pnpm", "preview"]

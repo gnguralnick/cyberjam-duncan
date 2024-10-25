@@ -121,9 +121,9 @@ async def get_file_info(file_id: str):
     if not model_path.exists():
         raise HTTPException(404, "File ID not found")
     return {
-        "model_path": str(model_path),
-        "qr_path": str(QR_DIR / f"{file_id}.png"),
-        "marker_path": str(MARKER_DIR / f"{file_id}.patt")
+        "model_path": '/model/' + file_id,
+        "qr_path": '/qr/' + file_id,
+        "marker_path": '/marker/' + file_id
     }
 
 @app.get("/model/{file_id}")
