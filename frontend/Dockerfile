@@ -7,14 +7,14 @@ COPY package.json ./
 
 FROM base as development
 # Install all dependencies (including devDependencies)
-RUN npm install --force
+RUN npm install
 COPY . .
 CMD ["npm", "run", "dev"]
 
 FROM base as production
 # Install dependencies without devDependencies
 RUN npm install -g typescript
-RUN npm install --prod --force
+RUN npm install
 COPY . .
 RUN npm run build
 CMD ["npm", "run", "preview"]
