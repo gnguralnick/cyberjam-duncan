@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { QRCodeScanner } from './components/QRCodeScanner.tsx';
 import { ARDisplay } from './components/ARDisplay.tsx';
 import { api, BASE_URL } from './api.ts';

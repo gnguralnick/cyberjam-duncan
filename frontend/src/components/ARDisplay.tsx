@@ -1,4 +1,3 @@
-import React from 'react';
 import { ARDisplayProps } from '../types';
 import { ARCanvas, ARMarker } from '@artcom/react-three-arjs'; // ts-ignore
 import { useGLTF } from '@react-three/drei';

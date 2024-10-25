@@ -11,4 +11,4 @@ CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--reload", "
 FROM base as production
 RUN pip install -r requirements.txt
 COPY . .
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000", "--ssl-keyfile", "/app/certs/key.pem", "--ssl-certfile", "/app/certs/cert.pem"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
