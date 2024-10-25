@@ -45,7 +45,7 @@ export const ARDisplay: React.FC<ARDisplayProps> = ({ qrCode, modelUrl }) => {
         setIsLoading(true);
         
         // Fetch the marker pattern file
-        const markerResponse = await fetch(`http://localhost:8000/marker/${qrCode}`);
+        const markerResponse = await fetch(`${BASE_URL}/marker/${qrCode}`);
         if (!markerResponse.ok) throw new Error('Failed to load AR marker pattern');
         
         
