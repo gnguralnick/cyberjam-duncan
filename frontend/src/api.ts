@@ -1,4 +1,4 @@
-export const BASE_URL = 'http://cyberjam-duncan-backend.railway.internal';
+export const BASE_URL = 'https://cyberjam-duncan-backend.railway.internal';
 
 interface ApiOptions extends RequestInit {
   params?: Record<string, string>;
